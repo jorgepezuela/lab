@@ -1,0 +1,23 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: prometheus-scaledobject
+  labels:
+    app.kubernetes.io/name: microservice
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: microservice
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  cooldownPeriod: 100
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAdress: # Prometheus server name (.svc.cluster.local:port)
+        metricName: nginx_ingress_controller_requests
+        threshold: '25'
+        query: sum(rate(nginx_ingress_controller_requests[1m]))
+

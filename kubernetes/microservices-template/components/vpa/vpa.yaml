@@ -1,0 +1,26 @@
+---
+apiVersion: "autoscaling.k8s.io/v1"
+kind: VerticalPodAutoscaler
+metadata:
+  name: microservice-vpa
+  labels:
+    app.kubernetes.io/name: microservice
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: microservice
+  updatePolicy:
+    minReplicas: 2
+    updateMode: "Off"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 50m
+          memory: 50Mi
+        maxAllowed:
+          cpu: 1
+          memory: 2Gi
+        controlledResources: ["cpu", "memory"]
+

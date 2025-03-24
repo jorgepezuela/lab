@@ -1,0 +1,23 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: rabbitmq-scaledobject
+  labels:
+    app.kubernetes.io/name: microservice
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: microservice
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: ~
+        mode: QueueLength
+        value: "1000"
+        useRegex: "true"
+        hostFromEnv: # Host name environment variable
+

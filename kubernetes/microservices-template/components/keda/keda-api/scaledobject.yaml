@@ -1,0 +1,21 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: http-scaledobject
+  labels:
+    app.kubernetes.io/name: microservice
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: microservice
+  minReplicaCount: 2
+  maxReplicaCount: 10
+  triggers:
+    - type: metrics-api
+      metadata:
+        targetValue: ~
+        url: ~
+        valueLocation: ~
+
