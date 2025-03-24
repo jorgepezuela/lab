@@ -1,0 +1,11 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: microservice
+spec:
+  minAvailable: 1
+  selector:
+    matchlabels:
+      app.kubernetes.io/name: microservice
+
