@@ -1,0 +1,68 @@
+---
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice 
+  labels:
+    app.kubernetes.io/name: microservice
+spec:
+  selector:
+    matchLabels:
+    app.kubernetes.io/name: microservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: '2'
+      serviceAccountName: microservice
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name: microservice
+        image: microservice
+        imagePullPolicy: IfNotPresent
+        ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+        resources:
+          requests:
+            cpu: 125m
+            memory: 125Mi
+          limits:
+            cpu: 750m
+            memory: 768Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+        volumeMount:
+        - name: ingress-tls
+          mountPath: /mnt/secrets/ingress-tls
+          readOnly: true
+        - name: docker-registry
+          mountPath: /mnt/secrets/docker-registry
+          readOnly: true
+      imagePullSecrets:
+        - name: docker-registry
+      volumes:
+        - name: ingress-tls
+          csi:
+            driver: secrets-storestore.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: ingress-tls
+        - name: docker-registry
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: docker-registry
+      nodeSelector:
+        kubernetes.io/os: linux
+
