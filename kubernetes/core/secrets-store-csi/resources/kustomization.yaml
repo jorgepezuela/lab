@@ -1,0 +1,12 @@
+---
+helmCharts:
+  - name: secrets-store-csi-driver
+    repo: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+    version: 1.4.8
+    releaseName: secrets-store-csi-driver
+    namespace: kube-system
+    valuesInline:
+      syncSecret:
+        enabled: true
+      enableSecretRotation: true
+
