@@ -1,5 +1,0 @@
----
-resources:
-  # Resources list
-  #- argocd.yaml
-  #- keda.yaml
